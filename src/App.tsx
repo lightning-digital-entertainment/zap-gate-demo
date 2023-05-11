@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import { Blurhash } from "react-blurhash";
 import {
-    getMetadata,
-    getZapInvoice,
     metadata,
+    getZapInvoice,
 } from "./utils/nostr";
 import QRCode from "react-qr-code";
 function App() {
     const [invoice, setInvoice] = useState("");
+    const [image, setImage] = useState();
     useEffect(() => {
-        getMetadata();
-    }, []);
+        let interval: number;
+        if (invoice && !image) {
+            interval = window.setInterval(() => {
+                console.log("Runs");
+            }, 3000);
+        }
+        return () => {
+            clearInterval(interval);
+        };
+    }, [invoice, image]);
     return (
         <div className="absolute inset-0">
             <div className="flex w-full h-full justify-evenly items-center flex-col">
@@ -42,7 +50,10 @@ function App() {
                     </div>
                     {invoice ? (
                         <div className="absolute inset-0 flex justify-center items-center">
-                                <QRCode value={invoice} className="w-full h-full bg-slate-50 p-4 rounded"/>
+                            <QRCode
+                                value={invoice}
+                                className="w-full h-full bg-slate-50 p-4 rounded"
+                            />
                         </div>
                     ) : undefined}
                 </div>

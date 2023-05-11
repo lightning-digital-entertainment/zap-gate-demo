@@ -46,7 +46,7 @@ export async function getZapInvoice(
     }
     const { callback, allowsNostr } = await initRes.json();
     if (!allowsNostr) {
-        throw new Error('Provider not nostr enabled...')
+        throw new Error("Provider not nostr enabled...");
     }
     const cbReq = await fetch(
         `${callback}?amount=${amount * 1000}&nostr=${zapRequest}`
@@ -86,4 +86,35 @@ export async function buildZapEvent(
     };
     const signedEvent = await window.nostr.signEvent(event);
     return encodeURI(JSON.stringify(signedEvent));
+}
+
+export async function createNip98GetEvent(url: string) {
+    if (!window.nostr) {
+        throw new Error('No nip07 provider found...')
+    }
+    const event = {
+        content: "",
+        kind: 27235,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [
+            ["u", url],
+            ["method", "GET"],
+        ],
+    };
+    const signedEvent = await window.nostr.signEvent(event);
+    const encodedEvent = window.btoa(JSON.stringify(signedEvent));
+    return encodedEvent;
+}
+
+export async function nip98GetImage(url: string, base64event: string) {
+    const req = await fetch(url, {
+        headers: {
+            "Authorization": `Nostr ${base64event}`
+        }
+    })
+    if (req.status !== 200) {
+        throw new Error(`Client error: ${req.status}`)
+    }
+    const reqData = await req.blob()
+    return URL.createObjectURL(reqData);
 }
