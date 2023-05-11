@@ -1,6 +1,21 @@
 import { relayInit } from "nostr-tools";
 
-const relay = relayInit("wss://nostr-pub.wellorder.net");
+import { EventTemplate, Event } from "nostr-tools";
+
+declare global {
+    interface Window {
+        nostr: Nostr;
+    }
+}
+
+type Nostr = {
+    getPublicKey(): Promise<string>;
+    signEvent(event: EventTemplate): Promise<Event>;
+};
+
+const relayUrl = "wss://nostr-pub.wellorder.net";
+
+const relay = relayInit(relayUrl);
 
 export async function getMetadata() {
     if (relay.status !== 1) {
@@ -15,14 +30,29 @@ export async function getMetadata() {
     return data;
 }
 
-export async function getZapInvoice(lud16: `${string}@${string}`) {
-  const [username, domain] = lud16.split('@')
-  const initRes = await fetch(`https://${domain}/.well-known/lnurlp/${username}`);
-  if (initRes.status !== 200) {
-    throw new Error('Request failed')
-  }
-  const {callback, allowsNostr, nostrPubkey} = await initRes.json();
-  const cbReq = await fetch(callback)
+export async function getZapInvoice(
+    lud16: `${string}@${string}`,
+    amount: number,
+    targetPubkey: string,
+    targetEventId: string
+) {
+    const [username, domain] = lud16.split("@");
+    const zapRequest = await buildZapEvent(amount, targetPubkey, targetEventId);
+    const initRes = await fetch(
+        `https://${domain}/.well-known/lnurlp/${username}`
+    );
+    if (initRes.status !== 200) {
+        throw new Error("Request failed");
+    }
+    const { callback, allowsNostr, nostrPubkey } = await initRes.json();
+    if (!allowsNostr) {
+        throw new Error('Provider not nostr enabled...')
+    }
+    const cbReq = await fetch(
+        `${callback}?amount=${amount * 1000}&nostr=${zapRequest}`
+    );
+    const cbData = await cbReq.json();
+    return cbData.pr;
 }
 
 export const metadata = {
@@ -37,3 +67,23 @@ export const metadata = {
 };
 
 // async function getZapInvoice() {}
+
+export async function buildZapEvent(
+    amount: number,
+    targetPubkey: string,
+    targetEventId: string
+) {
+    const event = {
+        kind: 9734,
+        content: "ZapGate Demo",
+        tags: [
+            ["relays", relayUrl],
+            ["amount", String(amount * 1000)],
+            ["p", targetPubkey],
+            ["e", targetEventId],
+        ],
+        created_at: Math.floor(Date.now() / 1000),
+    };
+    const signedEvent = await window.nostr.signEvent(event);
+    return encodeURI(JSON.stringify(signedEvent));
+}
