@@ -3,6 +3,8 @@ import { Blurhash } from "react-blurhash";
 import {
     metadata,
     getZapInvoice,
+    createNip98GetEvent,
+    nip98GetImage,
 } from "./utils/nostr";
 import QRCode from "react-qr-code";
 function App() {
@@ -10,11 +12,26 @@ function App() {
     const [image, setImage] = useState();
     useEffect(() => {
         let interval: number;
-        if (invoice && !image) {
-            interval = window.setInterval(() => {
-                console.log("Runs");
-            }, 3000);
+        async function requestZapGatedRessource() {
+            if (invoice && !image) {
+                const signedEvent = await createNip98GetEvent(
+                    "https://getcurrent.io/.well-known/lnurlp/egge"
+                );
+                interval = window.setInterval(async () => {
+                    try {
+                        const image = await nip98GetImage(
+                            "https://getcurrent.io/.well-known/lnurlp/egge",
+                            signedEvent
+                        );
+                        console.log(image)
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    console.log(invoice);
+                }, 3000);
+            }
         }
+        requestZapGatedRessource();
         return () => {
             clearInterval(interval);
         };
