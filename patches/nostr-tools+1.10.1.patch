@@ -1,0 +1,14 @@
+diff --git a/node_modules/nostr-tools/package.json b/node_modules/nostr-tools/package.json
+index ec9fa00..9d080ff 100644
+--- a/node_modules/nostr-tools/package.json
++++ b/node_modules/nostr-tools/package.json
+@@ -14,7 +14,8 @@
+   "module": "lib/esm/nostr.mjs",
+   "exports": {
+     "import": "./lib/esm/nostr.mjs",
+-    "require": "./lib/nostr.cjs.js"
++    "require": "./lib/nostr.cjs.js",
++    "types": "./lib/index.d.ts"
+   },
+   "license": "Unlicense",
+   "dependencies": {
