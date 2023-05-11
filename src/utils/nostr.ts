@@ -44,7 +44,7 @@ export async function getZapInvoice(
     if (initRes.status !== 200) {
         throw new Error("Request failed");
     }
-    const { callback, allowsNostr, nostrPubkey } = await initRes.json();
+    const { callback, allowsNostr } = await initRes.json();
     if (!allowsNostr) {
         throw new Error('Provider not nostr enabled...')
     }

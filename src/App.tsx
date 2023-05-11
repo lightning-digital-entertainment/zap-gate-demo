@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Blurhash } from "react-blurhash";
 import {
-    buildZapEvent,
     getMetadata,
     getZapInvoice,
     metadata,
