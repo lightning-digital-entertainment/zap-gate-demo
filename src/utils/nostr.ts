@@ -13,7 +13,7 @@ type Nostr = {
     signEvent(event: EventTemplate): Promise<Event>;
 };
 
-const relayUrl = "wss://nostr-pub.wellorder.net";
+const relayUrl = "wss://nostr1.current.fyi";
 
 const relay = relayInit(relayUrl);
 

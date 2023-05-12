@@ -14,22 +14,22 @@ function App() {
         async function requestZapGatedRessource() {
             if (!invoice && !image) {
                 const signedEvent = await createNip98GetEvent(
-                    "https://zgate.current.ninja/zapcontent/5PVsfHeZJYVVfVNvTQDpL2wrXX9XpDBC/1683881973077-blob"
+                    "https://zgate.current.ninja/zapcontent/XnW7qvZUhijdxmAvgIDS7R0PeURfP86r/1683915822848-bamboo-rhino-344402-13a69538c70c.png"
                 );
                 const image = await nip98GetImage(
-                    "https://zgate.current.ninja/zapcontent/5PVsfHeZJYVVfVNvTQDpL2wrXX9XpDBC/1683881973077-blob",
+                    "https://zgate.current.ninja/zapcontent/XnW7qvZUhijdxmAvgIDS7R0PeURfP86r/1683915822848-bamboo-rhino-344402-13a69538c70c.png",
                     signedEvent
                 );
                 setImage(image);
             }
             if (invoice && !image) {
                 const signedEvent = await createNip98GetEvent(
-                    "https://zgate.current.ninja/zapcontent/5PVsfHeZJYVVfVNvTQDpL2wrXX9XpDBC/1683881973077-blob"
+                    "https://zgate.current.ninja/zapcontent/XnW7qvZUhijdxmAvgIDS7R0PeURfP86r/1683915822848-bamboo-rhino-344402-13a69538c70c.png"
                 );
                 interval = window.setInterval(async () => {
                     try {
                         const image = await nip98GetImage(
-                            "https://zgate.current.ninja/zapcontent/5PVsfHeZJYVVfVNvTQDpL2wrXX9XpDBC/1683881973077-blob",
+                            "https://zgate.current.ninja/zapcontent/XnW7qvZUhijdxmAvgIDS7R0PeURfP86r/1683915822848-bamboo-rhino-344402-13a69538c70c.png",
                             signedEvent
                         );
                         setImage(image);
@@ -48,10 +48,8 @@ function App() {
         };
     }, [invoice, image]);
     return (
-        <div className="absolute inset-0">
             <div className="flex w-full h-full justify-evenly items-center flex-col">
-                <h1 className="text-5xl">ZapGate Demo</h1>
-                <div className="w-72 h-72 bg-zinc-700 rounded justify-center items-center relative flex">
+                <div className="w-72 h-72 bg-zinc-700 rounded justify-center items-center relative flex my-4">
                     {!image ? (
                         <Blurhash
                             hash="LHJZSZ9bE05T}:5Tt6I;G]xDvz=w"
@@ -69,10 +67,10 @@ function App() {
                             className="px-4 py-2 bg-zinc-700 rounded hover:bg-zinc-600"
                             onClick={async () => {
                                 const pr = await getZapInvoice(
-                                    "egge@getcurrent.io",
+                                    "current@getcurrent.io",
                                     21,
-                                    "ddf03aca85ade039e6742d5bef3df352df199d0d31e22b9858e7eda85cb3bbbe",
-                                    "a1b20bfe3507e6ca533aebecb12604f4d24c3fe8cc696274967ba08fa782642b"
+                                    "c6318c608d835045bf1f83f372d13d52c8dcdd67ae8c578f5f54c02e584b4f8c",
+                                    "d71b28edee75a24010c1e5515d95186339470c0509c23fcc0484be4781712370"
                                 );
                                 setInvoice(pr);
                             }}
@@ -96,7 +94,6 @@ function App() {
                     Read the spec
                 </a>
             </div>
-        </div>
     );
 }
 
