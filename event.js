@@ -6,7 +6,7 @@ const event = {
         ["url", "https://thumbor.bigedition.com/lord-of-the-rings-thank-you-meme/XUgPDBlXvZsx1U19v1YxiSVXoDc=/0x0:573x429/800x600/filters:quality(80)/granite-web-prod/a8/e3/a8e3c55b4a0b4f87936e85cf3da0c585.jpeg"],
         ["m", "image/jpeg"],
         ["price", "21"],
-        ["preview", ['blurhash', 'LHJZSZ9bE05T}:5Tt6I;G]xDvz=w']],
+        ["preview",'blurhash','LHJZSZ9bE05T}:5Tt6I;G]xDvz=w'],
         [ "zap", "egge@getcurrent.io", "lud16" ]
     ],
 };

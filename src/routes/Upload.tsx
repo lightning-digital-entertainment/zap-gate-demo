@@ -1,12 +1,10 @@
-import React from "react";
-
 function Upload() {
     return (
         <div>
-            <form className="flex flex-col justify-center p-4 bg-zinc-700 m-4 rounded max-w-xl" onSubmit={(e) => {e.preventDefault(); const data = new FormData(e.target); data.forEach(item => console.log(item));}}>
+            <form className="flex flex-col justify-center p-4 bg-zinc-700 m-4 rounded max-w-xl" onSubmit={(e) => {e.preventDefault(); const data = new FormData(e.target as HTMLFormElement); data.forEach(item => console.log(item));}}>
                 <div className="flex my-2 flex-col">
                     <label>Image</label>
-                    <input type="file" id="asset" name="asset" onChange={(e) => {console.log(e.target[0].files)}}/>
+                    <input type="file" id="asset" name="asset"/>
                 </div>
                 <div className="flex my-2 flex-col">
                     <label>Price</label>
