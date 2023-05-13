@@ -63,6 +63,10 @@ export async function getEventById(eventId: string | undefined) {
     return data
 }
 
+export async function getPublicKey() {
+    return await window.nostr.getPublicKey();
+}
+
 export const metadata = {
     id: "6b41daa041c0435bc78b3b16f9b1ebfb08e6798e82c1f2aaa5eb094323992d80",
     pubkey: "ddf03aca85ade039e6742d5bef3df352df199d0d31e22b9858e7eda85cb3bbbe",
