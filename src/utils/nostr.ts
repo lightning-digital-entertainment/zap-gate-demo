@@ -13,7 +13,7 @@ type Nostr = {
     signEvent(event: EventTemplate): Promise<Event>;
 };
 
-const relayUrl = "wss://nostr1.current.fyi";
+const relayUrl = "wss://wc1.current.ninja";
 
 const relay = relayInit(relayUrl);
 
@@ -53,6 +53,14 @@ export async function getZapInvoice(
     );
     const cbData = await cbReq.json();
     return cbData.pr;
+}
+
+export async function getEventById(eventId: string | undefined) {
+    if (!eventId) {
+        return
+    }
+    const data = await relay.get({ids: [eventId]});
+    return data
 }
 
 export const metadata = {
