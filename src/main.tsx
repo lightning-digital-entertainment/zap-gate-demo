@@ -5,6 +5,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React from "react";
 import Root from "./routes/Root.tsx";
 import Upload from "./routes/Upload.tsx";
+import { Post } from "./routes";
+import { getEventById } from "./utils/nostr.ts";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +17,13 @@ const router = createBrowserRouter([
             {
                 path: "upload",
                 element: <Upload />,
+            },
+            {
+                path: "post/:eventId",
+                element: <Post />,
+                loader: ({params}) => {
+                    return getEventById(params.eventId)
+                }
             },
         ],
     },
