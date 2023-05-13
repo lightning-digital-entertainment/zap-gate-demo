@@ -60,7 +60,7 @@ function App() {
                             punch={1}
                         />
                     ) : (
-                        <img src={image} />
+                        <img src={image} className="rounded"/>
                     )}
                     {!image ? <div className="absolute inset-0 flex justify-center items-center">
                         <button

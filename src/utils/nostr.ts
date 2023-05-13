@@ -1,4 +1,4 @@
-import { relayInit } from "nostr-tools";
+import { nip19, relayInit } from "nostr-tools";
 
 import { EventTemplate, Event } from "nostr-tools";
 
@@ -13,7 +13,7 @@ type Nostr = {
     signEvent(event: EventTemplate): Promise<Event>;
 };
 
-const relayUrl = "wss://wc1.current.ninja";
+const relayUrl = "wss://nos.lol";
 
 const relay = relayInit(relayUrl);
 
@@ -55,12 +55,21 @@ export async function getZapInvoice(
     return cbData.pr;
 }
 
-export async function getEventById(eventId: string | undefined) {
+export async function getEventById(eventId: string | undefined) {
     if (!eventId) {
-        return
+        return;
     }
-    const data = await relay.get({ids: [eventId]});
-    return data
+    const {data, type} = nip19.decode(eventId);
+    if (type !== 'nevent' && type !== 'note') {
+        throw new Error('Invalid event')
+    }
+    if (relay.status !== 1) {
+        await relay.connect();
+    }
+    if (type === 'nevent') {
+        const res = await relay.get({ ids: [data.id] });
+        return res;
+    }
 }
 
 export async function getPublicKey() {
@@ -102,7 +111,7 @@ export async function buildZapEvent(
 
 export async function createNip98GetEvent(url: string) {
     if (!window.nostr) {
-        throw new Error('No nip07 provider found...')
+        throw new Error("No nip07 provider found...");
     }
     const event = {
         content: "",
@@ -118,15 +127,33 @@ export async function createNip98GetEvent(url: string) {
     return encodedEvent;
 }
 
+export async function createNip98Header(url: string, method: "GET" | "POST") {
+    if (!window.nostr) {
+        throw new Error("No nip07 provider found...");
+    }
+    const event = {
+        content: "",
+        kind: 27235,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [
+            ["u", url],
+            ["method", method],
+        ],
+    };
+    const signedEvent = await window.nostr.signEvent(event);
+    const encodedEvent = window.btoa(JSON.stringify(signedEvent));
+    return `Nostr ${encodedEvent}`;
+}
+
 export async function nip98GetImage(url: string, base64event: string) {
     const req = await fetch(url, {
         headers: {
-            "Authorization": `Nostr ${base64event}`
-        }
-    })
+            Authorization: `Nostr ${base64event}`,
+        },
+    });
     if (req.status !== 200) {
-        throw new Error(`Client error: ${req.status}`)
+        throw new Error(`Client error: ${req.status}`);
     }
-    const reqData = await req.blob()
+    const reqData = await req.blob();
     return URL.createObjectURL(reqData);
 }
