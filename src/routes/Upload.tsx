@@ -1,5 +1,8 @@
 import { useRef } from "react";
-import { createNip98Header, getPublicKey } from "../utils/nostr";
+import { getPublicKey } from "../utils/nostr";
+import { uploadZapGateFile } from "../utils/upload";
+import { pool } from "../main";
+import { nip19 } from "nostr-tools";
 
 function Upload() {
     const fileRef = useRef<HTMLInputElement>(null);
@@ -25,38 +28,14 @@ function Upload() {
         const dest = zapRef.current.value;
         const mime = fileRef.current.files[0].type;
         const file = fileRef.current.files[0];
-        const event = {
-            kind: 121121,
-            pubkey,
-            created_at: Math.floor(Date.now() / 1000),
-            content:
-                "Paid Content. Please zap the amount and see the content...",
-            tags: [
-                ["m", mime],
-                ["price", amount],
-                ["zap", dest, "lud16"],
-            ],
-        };
-        const formData = new FormData();
-        formData.set("asset", file);
-        formData.set("event", window.btoa(JSON.stringify(event)));
-        const authHeader = await createNip98Header(
-            "https://zgate.current.ninja/uploadzapcontent",
-            "POST"
-        );
-        const res = await fetch(
-            `https://zgate.current.ninja/uploadzapcontent`,
-            {
-                method: "POST",
-                body: formData,
-                headers: {
-                    Authorization: authHeader,
-                },
-            }
-        );
-        const data = await res.json();
-        console.log(data);
-        console.log(data.data.tags);
+        const zapGateEvent = await uploadZapGateFile(pubkey, mime, amount, dest, file)
+        const signedEvent = await window.nostr.signEvent(zapGateEvent)
+        console.log(signedEvent);
+        const relays = zapGateEvent.tags.filter(tag => tag[0] === 'relays')[0].slice(1)
+        const pub = pool.publish(relays, signedEvent);
+        pub.on('ok', () => {console.log('Published!')})
+        const bech32Id = nip19.neventEncode({id: signedEvent.id, relays: relays})
+        console.log(bech32Id)
     };
 
     return (

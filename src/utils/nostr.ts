@@ -1,6 +1,7 @@
-import { nip19, relayInit } from "nostr-tools";
+import { Kind, SimplePool, nip19, relayInit } from "nostr-tools";
 
 import { EventTemplate, Event } from "nostr-tools";
+import { pool } from "../main";
 
 declare global {
     interface Window {
@@ -57,17 +58,25 @@ export async function getZapInvoice(
 
 export async function getEventById(eventId: string | undefined) {
     if (!eventId) {
-        return;
+        return null;
     }
-    const {data, type} = nip19.decode(eventId);
-    if (type !== 'nevent' && type !== 'note') {
-        throw new Error('Invalid event')
+    const { data, type } = nip19.decode(eventId);
+    if (type !== "nevent" && type !== "note") {
+        throw new Error("Invalid event");
     }
     if (relay.status !== 1) {
         await relay.connect();
     }
-    if (type === 'nevent') {
-        const res = await relay.get({ ids: [data.id] });
+    if (type === "nevent") {
+        if (!data.relays) {
+            // use recommended relays
+        } else {
+            const res = await pool.get(data.relays, { ids: [data.id] });
+            return res;
+        }
+    }
+    if (type === "note") {
+        const res = await relay.get({ ids: [data] });
         return res;
     }
 }
