@@ -3,8 +3,11 @@ import { getPublicKey } from "../utils/nostr";
 import { uploadZapGateFile } from "../utils/upload";
 import { pool } from "../main";
 import { nip19 } from "nostr-tools";
+import { useNavigate } from "react-router-dom";
 
 function Upload() {
+    const navigate = useNavigate();
+
     const fileRef = useRef<HTMLInputElement>(null);
     const amountRef = useRef<HTMLInputElement>(null);
     const zapRef = useRef<HTMLInputElement>(null);
@@ -34,8 +37,8 @@ function Upload() {
         const relays = zapGateEvent.tags.filter(tag => tag[0] === 'relays')[0].slice(1)
         const pub = pool.publish(relays, signedEvent);
         pub.on('ok', () => {console.log('Published!')})
-        const bech32Id = nip19.neventEncode({id: signedEvent.id, relays: relays})
-        console.log(bech32Id)
+        const bech32Id = nip19.neventEncode({id: signedEvent.id, relays: relays});
+        navigate(`/post/${bech32Id}`)
     };
 
     return (

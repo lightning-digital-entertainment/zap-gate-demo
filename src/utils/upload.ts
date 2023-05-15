@@ -10,7 +10,7 @@ export async function uploadZapGateFile(pubkey:string, mime:string, amount:strin
         "Paid Content. Please zap the amount and see the content...",
     tags: [
         ["m", mime],
-        ["price", amount],
+        ["amount", amount],
         ["zap", dest, "lud16"],
     ],
 };

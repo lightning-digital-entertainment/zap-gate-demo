@@ -35,10 +35,11 @@ export async function getZapInvoice(
     lud16: `${string}@${string}`,
     amount: number,
     targetPubkey: string,
-    targetEventId: string
+    targetEventId: string,
+    relays: string[]
 ) {
     const [username, domain] = lud16.split("@");
-    const zapRequest = await buildZapEvent(amount, targetPubkey, targetEventId);
+    const zapRequest = await buildZapEvent(amount, targetPubkey, targetEventId, relays);
     const initRes = await fetch(
         `https://${domain}/.well-known/lnurlp/${username}`
     );
@@ -101,13 +102,14 @@ export const metadata = {
 export async function buildZapEvent(
     amount: number,
     targetPubkey: string,
-    targetEventId: string
+    targetEventId: string,
+    relays: string[]
 ) {
     const event = {
         kind: 9734,
         content: "ZapGate Demo",
         tags: [
-            ["relays", relayUrl],
+            ["relays", ...relays],
             ["amount", String(amount * 1000)],
             ["p", targetPubkey],
             ["e", targetEventId],
