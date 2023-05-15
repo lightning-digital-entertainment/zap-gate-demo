@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import { Blurhash } from "react-blurhash";
 import {
-    getZapInvoice,
     createNip98GetEvent,
     nip98GetImage,
 } from "./utils/nostr";
-import QRCode from "react-qr-code";
 function App() {
     const [invoice, setInvoice] = useState("");
     const [image, setImage] = useState("");
