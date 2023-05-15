@@ -7,7 +7,7 @@ import Root from "./routes/Root.tsx";
 import Upload from "./routes/Upload.tsx";
 import { Post } from "./routes";
 import { getEventById } from "./utils/nostr.ts";
-import { SimplePool } from "nostr-tools";
+import { SimplePool } from "nostr-tools"; 
 
 export const pool = new SimplePool();
 
@@ -26,6 +26,8 @@ const router = createBrowserRouter([
                 element: <Post />,
                 loader: async ({params}) => {
                     const event = await getEventById(params.eventId);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     if (!event || event.kind !== 121121) {
                         throw new Error('Invalid event')
                     }
@@ -38,7 +40,7 @@ const router = createBrowserRouter([
                         console.log(event)
                         return {event, url, amount, zap, relays}
                     } catch(e) {
-                        throw new Error(e)
+                        console.log(e)
                     }
                 }
             },

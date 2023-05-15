@@ -3,9 +3,11 @@ import { Blurhash } from "react-blurhash";
 import { useLoaderData } from "react-router-dom";
 import { createNip98GetEvent, getZapInvoice, nip98GetImage } from "../utils/nostr";
 import QRCode from "react-qr-code";
+import { Event } from "nostr-tools";
 
 function Post() {
-    const data = useLoaderData();
+    // Workaround because useLoaderData does not support Type generics yet!!
+    const data = useLoaderData() as {url: string, zap: string[], event: Event, relays: string[]};
     const [image, setImage] = useState("");
     const [invoice, setInvoice] = useState("");
     return (

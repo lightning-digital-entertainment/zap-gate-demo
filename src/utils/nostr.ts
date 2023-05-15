@@ -32,7 +32,7 @@ export async function getMetadata() {
 }
 
 export async function getZapInvoice(
-    lud16: `${string}@${string}`,
+    lud16: string,
     amount: number,
     targetPubkey: string,
     targetEventId: string,
