@@ -4,6 +4,7 @@ import { uploadZapGateFile } from "../utils/upload";
 import { pool } from "../main";
 import { nip19 } from "nostr-tools";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 function Upload() {
     const navigate = useNavigate();
@@ -42,10 +43,10 @@ function Upload() {
     };
 
     return (
-        <div className="flex justify-center flex-col">
+        <div className="flex justify-center flex-col items-center">
             <h2 className="text-center text-xl my-4">Upload your own zap gated image</h2>
             <form
-                className="flex flex-col justify-center p-4 bg-zinc-700 m-4 rounded max-w-xl"
+                className="flex flex-col justify-center p-4 bg-zinc-700 rounded max-w-xl"
                 onSubmit={submitHandler}
             >
                 <div className="flex my-2 flex-col">
@@ -53,7 +54,7 @@ function Upload() {
                     <input type="file" id="asset" name="asset" ref={fileRef} />
                 </div>
                 <div className="flex my-2 flex-col">
-                    <label>Price</label>
+                    <label>Price in SATS</label>
                     <input
                         type="number"
                         id="price"
@@ -61,8 +62,8 @@ function Upload() {
                         ref={amountRef}
                     />
                 </div>
-                <div className="flex my-2 flex-col">
-                    <label>Lightning Address</label>
+                <div className="flex my-2 flex-col mb-4">
+                    <label>Your Lightning Address</label>
                     <input
                         type="text"
                         id="zapTarget"
@@ -70,7 +71,7 @@ function Upload() {
                         ref={zapRef}
                     />
                 </div>
-                <button>Submit!</button>
+                <Button text="Submit"/>
             </form>
         </div>
     );
