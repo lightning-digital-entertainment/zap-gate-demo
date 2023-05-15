@@ -8,7 +8,7 @@ function Root() {
             <Navbar />
             <Outlet />
             {navigation.state === "loading" ? (
-                <div className="absolute inset-0 bg-red-900 opacity-50" />
+                <div className="absolute inset-0 bg-red-900 opacity-80" />
             ) : undefined}
         </div>
     );
