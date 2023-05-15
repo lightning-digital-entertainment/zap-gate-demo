@@ -1,4 +1,4 @@
-import { Kind, SimplePool, nip19, relayInit } from "nostr-tools";
+import { nip19, relayInit } from "nostr-tools";
 
 import { EventTemplate, Event } from "nostr-tools";
 import { pool } from "../main";
