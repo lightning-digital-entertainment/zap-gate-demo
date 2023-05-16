@@ -11,7 +11,7 @@ const useFeed = () => {
     useEffect(() => {
         const sub = pool.sub(
             ["wss://nostr1.current.fyi", "wss://wc1.current.ninja"],
-            [{ kinds: [121121], limit: 10 }]
+            [{ kinds: [121121], limit: 25 }]
         );
         sub.on('event', handleEvent)
         return () => {

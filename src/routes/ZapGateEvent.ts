@@ -10,6 +10,7 @@ export type SerializableZapGateEvent = {
   relays: string[];
   preview: string[];
   amount: string;
+  zap: string[];
 
 }
 
@@ -21,6 +22,7 @@ class ZapGateEvent {
   relays: string[];
   preview: string[];
   amount: string;
+  zap: string[];
 
   constructor(event: Event) {
     this.eventData = event;
@@ -30,6 +32,7 @@ class ZapGateEvent {
     this.relays = this.getTagValue(event.tags, 'relays')
     this.preview = this.getTagValue(event.tags, 'preview')
     this.amount = this.getTagValue(event.tags, 'amount')[0]
+    this.zap = this.getTagValue(event.tags, 'zap')
   }
 
   private getTagValue(tags: string[][], tagName: string): string[] {
@@ -45,7 +48,8 @@ class ZapGateEvent {
       url: this.url,
       relays: this.relays,
       preview: this.preview,
-      amount: this.amount
+      amount: this.amount,
+      zap: this.zap
     }
   }
 

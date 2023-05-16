@@ -3,6 +3,10 @@ import { nip19, relayInit } from "nostr-tools";
 import { EventTemplate, Event } from "nostr-tools";
 import { pool } from "../main";
 
+export interface ResponseError extends Error {
+    status?: number;
+}
+
 declare global {
     interface Window {
         nostr: Nostr;
@@ -163,7 +167,10 @@ export async function nip98GetImage(url: string, base64event: string) {
         },
     });
     if (req.status !== 200) {
-        throw new Error(`Client error: ${req.status}`);
+        const error: ResponseError = new Error()
+        error.message = `Client error: ${req.status}`
+        error.status = req.status;
+        throw error;
     }
     const reqData = await req.blob();
     return URL.createObjectURL(reqData);

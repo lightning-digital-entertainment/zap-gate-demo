@@ -12,6 +12,7 @@ function Upload() {
     const fileRef = useRef<HTMLInputElement>(null);
     const amountRef = useRef<HTMLInputElement>(null);
     const zapRef = useRef<HTMLInputElement>(null);
+    const descriptionRef = useRef<HTMLInputElement>(null);
 
     const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
         e: React.FormEvent<HTMLFormElement>
@@ -32,7 +33,8 @@ function Upload() {
         const dest = zapRef.current.value;
         const mime = fileRef.current.files[0].type;
         const file = fileRef.current.files[0];
-        const zapGateEvent = await uploadZapGateFile(pubkey, mime, amount, dest, file)
+        const content = descriptionRef.current?.value
+        const zapGateEvent = await uploadZapGateFile(pubkey, mime, amount, dest, file, content)
         const signedEvent = await window.nostr.signEvent(zapGateEvent)
         console.log(signedEvent);
         const relays = zapGateEvent.tags.filter(tag => tag[0] === 'relays')[0].slice(1)
@@ -69,6 +71,15 @@ function Upload() {
                         id="zapTarget"
                         name="zapTarget"
                         ref={zapRef}
+                    />
+                </div>
+                <div className="flex my-2 flex-col mb-4">
+                    <label>Post Description</label>
+                    <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        ref={descriptionRef}
                     />
                 </div>
                 <Button text="Submit"/>

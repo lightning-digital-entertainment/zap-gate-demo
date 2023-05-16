@@ -7,7 +7,7 @@ function Navbar() {
     return (
         <nav className="flex flex-row justify-between px-4 py-8 border-b-2 border-zinc-700 items-center">
             <Link to={"/"} className="flex">
-                <img src={logo} className="w-48"/>
+                <img src={logo} className="w-24 sm:w-48"/>
             </Link>
             <div>
                 <a
