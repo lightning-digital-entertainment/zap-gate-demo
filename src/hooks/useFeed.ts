@@ -17,7 +17,7 @@ const useFeed = () => {
         return () => {
             sub.unsub();
         };
-    }, []);
+    }, [handleEvent]);
 };
 
 export default useFeed;

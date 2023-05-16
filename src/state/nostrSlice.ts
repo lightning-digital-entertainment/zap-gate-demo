@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import ZapGateEvent, { SerializableZapGateEvent } from "../routes/ZapGateEvent";
+import { SerializableZapGateEvent } from "../routes/ZapGateEvent";
 
 export interface NostrState {
     unlocked: string[];

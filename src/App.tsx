@@ -1,5 +1,4 @@
 import Feed from "./components/Feed";
-import PostCard from "./components/PostCard";
 import useFeed from "./hooks/useFeed";
 
 function App() {

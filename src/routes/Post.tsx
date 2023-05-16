@@ -10,10 +10,8 @@ import QRCode from "react-qr-code";
 import { Event } from "nostr-tools";
 import Button from "../components/Button";
 import SecondaryButton from "../components/SecondaryButton";
-import ZapGateEvent from "./ZapGateEvent";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { addUnlock } from "../state/nostrSlice";
-import useUnlocked from "../hooks/useUnlocked";
 
 function Post() {
     // Workaround because useLoaderData does not support Type generics yet!!

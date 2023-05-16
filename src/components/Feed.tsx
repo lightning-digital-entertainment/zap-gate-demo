@@ -1,6 +1,4 @@
-import React from 'react'
 import PostCard from './PostCard'
-import useFeed from '../hooks/useFeed'
 import { useAppSelector } from '../hooks/useAppSelector'
 
 function Feed() {
