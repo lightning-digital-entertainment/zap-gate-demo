@@ -2,9 +2,21 @@ import React, { useEffect } from "react";
 import Modal from "./Modal";
 import QRCode from "react-qr-code";
 import Button from "./Button";
-import { useAppSelector } from "../hooks/useAppSelector";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { addEvent } from "../state/nostrSlice";
+
+declare global {
+    interface Window {
+        webln: WebLn;
+    }
+}
+
+type WebLn = {
+    enable(): void;
+    sendPayment(paymentRequest: string): Promise<SendPaymentResponse>;
+};
+
+interface SendPaymentResponse {
+    preimage: string;
+}
 
 type InvoiceModalProps = {
     invoice: string;
@@ -35,7 +47,7 @@ function InvoiceModal({ invoice, onClose, isOpen }: InvoiceModalProps) {
         if (window.webln && isOpen) {
             payInvoiceWithWebln();
         }
-    }, [isOpen]);
+    }, [isOpen, invoice]);
     return (
         <>
             {isOpen ? (

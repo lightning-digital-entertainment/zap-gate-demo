@@ -20,6 +20,9 @@ export const nostrSlice = createSlice({
         addUnlock: (state, action: PayloadAction<string>) => {
           state.unlocked = [...new Set([...state.unlocked, action.payload])]
         },
+        hydrateUnlocks: (state, action: PayloadAction<string[]>) => {
+            state.unlocked = action.payload
+        },
         addEvent: (state, action: PayloadAction<SerializableZapGateEvent>) => {
             if (state.zgEventIds.includes(action.payload.id)) {
                 return;
@@ -30,6 +33,6 @@ export const nostrSlice = createSlice({
     },
 });
 
-export const { addUnlock, addEvent } = nostrSlice.actions;
+export const { addUnlock, addEvent, hydrateUnlocks } = nostrSlice.actions;
 
 export default nostrSlice.reducer;

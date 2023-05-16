@@ -13,6 +13,7 @@ import {
     nip98GetImage,
 } from "../utils/nostr";
 import InvoiceModal from "./InvoiceModal";
+import { FaUnlock } from "react-icons/fa";
 
 type PostCardProps = {
     event: SerializableZapGateEvent;
@@ -35,11 +36,11 @@ function PostCard({ event }: PostCardProps) {
     const [invoice, setInvoice] = useState("");
     const dispatch = useDispatch();
     return (
-        <div className="p-2 my-4 bg-zinc-800 flex flex-col rounded items-center max-w-xs  lg:max-w-sm">
+        <div className="relative p-2 my-4 bg-zinc-800 flex flex-col rounded items-center max-w-xs  lg:max-w-sm">
             <p className="text-sm">
                 {nip19.npubEncode(event.eventData.pubkey).slice(0, 32)}...
             </p>
-            <div className="my-2">
+            <div className="my-2 relative">
                 {!image ? (
                     <Blurhash
                         hash={event.preview[1] || "12345678"}
@@ -52,6 +53,9 @@ function PostCard({ event }: PostCardProps) {
                 ) : (
                     <img src={image} />
                 )}
+                {isUnlocked ? <div className="absolute top-2 right-2 text-xl text-current-500">
+                    <FaUnlock />
+                </div> : undefined}
             </div>
             <div className="w-full">{event.eventData.content}</div>
             {!image ? (
