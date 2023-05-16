@@ -6,8 +6,10 @@ export default {
             colors: {
                 current: {
                     500: "#faa200",
-                    
                 },
+            },
+            fontFamily: {
+                main: ["Montserrat", "sans-serif"],
             },
         },
     },

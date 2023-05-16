@@ -5,7 +5,7 @@ function App() {
     useFeed();
     return (
         <div className="flex w-full h-full items-center flex-col overflow-scroll">
-            <h2>Latest posts</h2>
+            <h2 className="font-main font-bold">Latest posts</h2>
             <Feed/>
         </div>
     );

@@ -35,7 +35,7 @@ function PostCard({ event }: PostCardProps) {
     const [invoice, setInvoice] = useState("");
     const dispatch = useDispatch();
     return (
-        <div className="p-2 my-2 bg-zinc-800 flex flex-col rounded items-center max-w-xs  lg:max-w-sm">
+        <div className="p-2 my-4 bg-zinc-800 flex flex-col rounded items-center max-w-xs  lg:max-w-sm">
             <p className="text-sm">
                 {nip19.npubEncode(event.eventData.pubkey).slice(0, 32)}...
             </p>
@@ -61,7 +61,7 @@ function PostCard({ event }: PostCardProps) {
                         onClick={async () => {
                             const pr = await getZapInvoice(
                                 event.zap[0],
-                                21,
+                                Number(event.amount),
                                 event.eventData.pubkey,
                                 event.id,
                                 event.relays
