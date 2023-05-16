@@ -28,8 +28,6 @@ const router = createBrowserRouter([
                 element: <Post />,
                 loader: async ({ params }) => {
                     const event = await getEventById(params.eventId);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
                     if (!event || event.kind !== 121121) {
                         throw new Error("Invalid event");
                     }

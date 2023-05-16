@@ -24,12 +24,9 @@ function Post() {
         relays: string[];
         preview: string[];
     };
-    const test = new ZapGateEvent(data.event);
     const [image, setImage] = useState("");
     const [invoice, setInvoice] = useState("");
     const dispatch = useAppDispatch();
-    const unlocked = useUnlocked(data.event.id);
-    console.log(unlocked);
     return (
         <div className="flex w-full h-full justify-evenly items-center flex-col">
             <div className="w-72 h-auto bg-zinc-700 rounded justify-center items-center relative flex my-4 p-2 overflow-hidden">

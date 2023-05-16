@@ -1,3 +1,17 @@
+diff --git a/node_modules/nostr-tools/lib/event.d.ts b/node_modules/nostr-tools/lib/event.d.ts
+index c71deed..abccd8f 100644
+--- a/node_modules/nostr-tools/lib/event.d.ts
++++ b/node_modules/nostr-tools/lib/event.d.ts
+@@ -19,7 +19,8 @@ export declare enum Kind {
+     ClientAuth = 22242,
+     BadgeDefinition = 30008,
+     ProfileBadge = 30009,
+-    Article = 30023
++    Article = 30023,
++    ZapGate = 121121,
+ }
+ export type EventTemplate = {
+     kind: Kind;
 diff --git a/node_modules/nostr-tools/package.json b/node_modules/nostr-tools/package.json
 index ec9fa00..9d080ff 100644
 --- a/node_modules/nostr-tools/package.json
