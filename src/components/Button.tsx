@@ -6,7 +6,7 @@ type ButtonProps = {
 function Button({onClick, text}: ButtonProps) {
     return (
         <button
-            className="px-4 py-2 bg-current-500 rounded hover:bg-yellow-400 text-zinc-900"
+            className="px-2 py-1 bg-current-500 rounded hover:bg-yellow-400 text-zinc-900"
             onClick={onClick}
         >
             {text}

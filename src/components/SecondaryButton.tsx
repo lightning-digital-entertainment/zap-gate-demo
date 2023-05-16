@@ -6,7 +6,7 @@ type ButtonProps = {
 function SecondaryButton({onClick, text}: ButtonProps) {
     return (
         <button
-            className="px-4 py-2 bg-zinc-700 rounded hover:bg-zinc-600"
+            className="px-2 py-1 bg-zinc-700 rounded hover:bg-zinc-600"
             onClick={onClick}
         >
             {text}

@@ -1,4 +1,4 @@
-import { Event, Kind, serializeEvent } from "nostr-tools";
+import { Event, Kind } from "nostr-tools";
 import { store } from "../store";
 import { addEvent } from "../state/nostrSlice";
 
@@ -9,6 +9,7 @@ export type SerializableZapGateEvent = {
   url: string;
   relays: string[];
   preview: string[];
+  amount: string;
 
 }
 
@@ -18,7 +19,8 @@ class ZapGateEvent {
   id: string;
   url: string;
   relays: string[];
-  preview: string[]
+  preview: string[];
+  amount: string;
 
   constructor(event: Event) {
     this.eventData = event;
@@ -27,6 +29,7 @@ class ZapGateEvent {
     this.url = this.getTagValue(event.tags, 'url')[0]
     this.relays = this.getTagValue(event.tags, 'relays')
     this.preview = this.getTagValue(event.tags, 'preview')
+    this.amount = this.getTagValue(event.tags, 'amount')[0]
   }
 
   private getTagValue(tags: string[][], tagName: string): string[] {
@@ -42,6 +45,7 @@ class ZapGateEvent {
       url: this.url,
       relays: this.relays,
       preview: this.preview,
+      amount: this.amount
     }
   }
 
