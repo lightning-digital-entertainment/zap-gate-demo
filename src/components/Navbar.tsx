@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Button from "./Button";
 import logo from "../assets/logo.svg";
 
-import {FaGithub} from 'react-icons/fa'
+import {FaEnvelope, FaGithub} from 'react-icons/fa'
 
 function Navbar() {
     const navigate = useNavigate();
@@ -14,12 +14,18 @@ function Navbar() {
             <div className="flex flex-row items-center">
                 <a
                     href="https://github.com/Egge7/nips/blob/zapGates/XX.md"
-                    className="mr-4 text-xl"
+                    className="mr-4 text-xl text-white"
                 >
                     <FaGithub/>
                 </a>
+                <NavLink
+                    to={'contact'}
+                    className="mr-4 text-xl text-white"
+                >
+                    <FaEnvelope/>
+                </NavLink>
                 <Button
-                    text="Try it!"
+                    text="+ New Post"
                     onClick={() => {
                         navigate("upload");
                     }}

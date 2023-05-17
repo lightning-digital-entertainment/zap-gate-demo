@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Modal from "./Modal";
 import QRCode from "react-qr-code";
 import Button from "./Button";
+import SecondaryButton from "./SecondaryButton";
 
 declare global {
     interface Window {
@@ -30,24 +31,7 @@ function InvoiceModal({ invoice, onClose, isOpen }: InvoiceModalProps) {
     } else {
         document.body.style.overflow = "unset";
     }
-    // check this again!!
-    useEffect(() => {
-        async function payInvoiceWithWebln() {
-            try {
-                await window.webln.enable();
-                try {
-                    await window.webln.sendPayment(invoice);
-                } catch (e) {
-                    console.log(e);
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        if (window.webln && isOpen) {
-            payInvoiceWithWebln();
-        }
-    }, [isOpen, invoice]);
+
     return (
         <>
             {isOpen ? (
@@ -56,10 +40,13 @@ function InvoiceModal({ invoice, onClose, isOpen }: InvoiceModalProps) {
                         <div className="bg-white p-4 rounded">
                             <QRCode value={invoice} />
                         </div>
-                        <p className="animate-pulse w-full text-center">
+                        <p className="animate-pulse w-full text-center mb-4">
                             Awaiting payment
                         </p>
-                        <Button text="Close" onClick={onClose} />
+                        <div className="flex flex-row justify-between">
+                            <Button text="Copy Invoice" onClick={() => {navigator.clipboard.writeText(invoice)}}/>
+                            <SecondaryButton text="Close" onClick={onClose} />
+                        </div>
                     </div>
                 </Modal>
             ) : undefined}

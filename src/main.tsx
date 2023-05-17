@@ -10,6 +10,7 @@ import { getEventById } from "./utils/nostr.ts";
 import { SimplePool } from "nostr-tools";
 import { Provider } from "react-redux";
 import { store } from "./store.ts";
+import Contact from "./routes/Contact.tsx";
 
 export const pool = new SimplePool();
 
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: "upload",
                 element: <Upload />,
+            },
+            {
+                path: "contact",
+                element: <Contact />,
             },
             {
                 path: "post/:eventId",

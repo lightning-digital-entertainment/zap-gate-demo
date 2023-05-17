@@ -65,7 +65,7 @@ function Upload() {
                     />
                 </div>
                 <div className="flex my-2 flex-col mb-4">
-                    <label>Your Lightning Address</label>
+                    <label>Lightning Address (for receiving zaps)</label>
                     <input
                         type="text"
                         id="zapTarget"
