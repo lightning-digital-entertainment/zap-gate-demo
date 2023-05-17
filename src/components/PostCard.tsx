@@ -22,7 +22,6 @@ type PostCardProps = {
 function PostCard({ event }: PostCardProps) {
     const shareData = {
         title: "My ZapGate Post",
-        text: event.eventData.content,
         url: `https://zapgate.link/post/${nip19.neventEncode({id: event.id, relays: event.relays})}`
       };
     const isUnlocked = useUnlocked(event.id);
