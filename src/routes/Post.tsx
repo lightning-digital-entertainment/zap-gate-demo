@@ -1,104 +1,13 @@
-import { useState } from "react";
-import { Blurhash } from "react-blurhash";
 import { useLoaderData } from "react-router-dom";
-import {
-    createNip98GetEvent,
-    getZapInvoice,
-    nip98GetImage,
-} from "../utils/nostr";
-import QRCode from "react-qr-code";
-import { Event } from "nostr-tools";
-import Button from "../components/Button";
-import SecondaryButton from "../components/SecondaryButton";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { addUnlock } from "../state/nostrSlice";
+import PostCard from "../components/PostCard";
+import ZapGateEvent from "./ZapGateEvent";
 
 function Post() {
     // Workaround because useLoaderData does not support Type generics yet!!
-    const data = useLoaderData() as {
-        url: string;
-        zap: string[];
-        event: Event;
-        relays: string[];
-        preview: string[];
-    };
-    const [image, setImage] = useState("");
-    const [invoice, setInvoice] = useState("");
-    const dispatch = useAppDispatch();
+    const data = useLoaderData() as ZapGateEvent;
     return (
-        <div className="flex w-full h-full justify-evenly items-center flex-col">
-            <div className="w-72 h-auto bg-zinc-700 rounded justify-center items-center relative flex my-4 p-2 overflow-hidden">
-                {!image ? (
-                    <Blurhash
-                        hash={data.preview[2]}
-                        width={"18rem"}
-                        height={"18rem"}
-                        resolutionX={32}
-                        resolutionY={32}
-                        punch={1}
-                    />
-                ) : (
-                    <img src={image} className="rounded object-cover" />
-                )}
-                {invoice && !image ? (
-                    <div className="absolute inset-0 flex justify-center items-center">
-                        <QRCode
-                            value={invoice}
-                            className="w-full h-full bg-slate-50 p-4 rounded"
-                        />
-                    </div>
-                ) : undefined}
-            </div>
-            {!image ? (
-                <div className="justify-around flex w-72 items-center">
-                    <SecondaryButton
-                        text="Zap to unlock!"
-                        onClick={async () => {
-                            const pr = await getZapInvoice(
-                                data.zap[1],
-                                21,
-                                data.event.pubkey,
-                                data.event.id,
-                                data.relays.slice(1)
-                            );
-                            const signedEvent = await createNip98GetEvent(
-                                data.url
-                            );
-                            const interval = window.setInterval(async () => {
-                                try {
-                                    const image = await nip98GetImage(
-                                        data.url,
-                                        signedEvent
-                                    );
-
-                                    setImage(image);
-                                    setInvoice("");
-                                    clearInterval(interval);
-                                    dispatch(addUnlock(data.event.id));
-                                } catch (e) {
-                                    console.log(e);
-                                }
-                                console.log(invoice);
-                            }, 1500);
-                            setInvoice(pr);
-                        }}
-                    />
-                    <Button
-                        onClick={async () => {
-                            const signedEvent = await createNip98GetEvent(
-                                data.url
-                            );
-                            const image = await nip98GetImage(
-                                data.url,
-                                signedEvent
-                            );
-                            setImage(image);
-                            dispatch(addUnlock(data.event.id));
-                        }}
-                        text="Restore"
-                    />
-                </div>
-            ) : undefined}
+        <div className="flex w-full items-center flex-col">
+            <PostCard event={data} />
         </div>
     );
 }

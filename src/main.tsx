@@ -11,6 +11,7 @@ import { SimplePool } from "nostr-tools";
 import { Provider } from "react-redux";
 import { store } from "./store.ts";
 import Contact from "./routes/Contact.tsx";
+import ZapGateEvent from "./routes/ZapGateEvent.ts";
 
 export const pool = new SimplePool();
 
@@ -36,28 +37,8 @@ const router = createBrowserRouter([
                     if (!event || event.kind !== 121121) {
                         throw new Error("Invalid event");
                     }
-                    try {
-                        const url = event.tags.filter(
-                            (item) => item[0] === "url"
-                        )[0][1];
-                        const amount = event.tags.filter(
-                            (item) => item[0] === "amount"
-                        )[0];
-                        const zap = event.tags.filter(
-                            (item) => item[0] === "zap"
-                        )[0];
-                        const relays = event.tags.filter(
-                            (item) => item[0] === "relays"
-                        )[0];
-                        const preview = event.tags.filter(
-                            (item) => item[0] === "preview"
-                        )[0];
-                        console.log(url, amount, zap);
-                        console.log(event);
-                        return { event, url, amount, zap, relays, preview };
-                    } catch (e) {
-                        console.log(e);
-                    }
+                        const zapGateEvent = new ZapGateEvent(event);
+                        return zapGateEvent;
                 },
             },
         ],
