@@ -1,5 +1,3 @@
-import React from "react";
-
 function Contact() {
     return (
         <div className="flex flex-col items-center w-full text-center">

@@ -10,14 +10,14 @@ function Root() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const nostrAvailable = useNip07();
-    const [showBlock, setShowBlock] = useState(!nostrAvailable)
+    const [showBlock, setShowBlock] = useState(!nostrAvailable);
     useEffect(() => {
-        const unlocks = window.localStorage.getItem('unlockedPosts');
+        const unlocks = window.localStorage.getItem("unlockedPosts");
         if (unlocks) {
-            const parsedUnlocks: string[] = JSON.parse(unlocks)
-            dispatch(hydrateUnlocks(parsedUnlocks))
+            const parsedUnlocks: string[] = JSON.parse(unlocks);
+            dispatch(hydrateUnlocks(parsedUnlocks));
         }
-    }, [dispatch])
+    }, [dispatch]);
     return (
         <div
             className={
@@ -37,14 +37,14 @@ function Root() {
                         <p>No NIP07 provider found...</p>
                         <p className="mb-4">
                             Get one at{" "}
-                            <a
-                                href="https://getalby.com"
-                                className="text-current-500"
-                            >
-                                getalby.com
-                            </a>
+                            <a href="https://getalby.com">getalby.com</a>
                         </p>
-                        <Button text="Open Anyways!" onClick={() => {setShowBlock(false)}}/>
+                        <Button
+                            text="Open Anyways!"
+                            onClick={() => {
+                                setShowBlock(false);
+                            }}
+                        />
                     </div>
                 </div>
             ) : undefined}
