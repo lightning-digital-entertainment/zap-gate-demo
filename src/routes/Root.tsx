@@ -4,23 +4,34 @@ import useNip07 from "../hooks/useNip07";
 import Button from "../components/Button";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { hydrateUnlocks } from "../state/nostrSlice";
+import { hydrateUnlocks, setKey } from "../state/nostrSlice";
 import WarningBanner from "../components/WarningBanner";
 import { useAppSelector } from "../hooks/useAppSelector";
+import { generatePrivateKey } from "nostr-tools";
+import { getKeyFromStorage } from "../utils/keys";
 
 function Root() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const nostrAvailable = useNip07();
     const bannerDismissed = useAppSelector(state => state.utility.bannerDismissed)
-    const [showBlock, setShowBlock] = useState(!nostrAvailable);
+    const [showBlock, setShowBlock] = useState(true);
     useEffect(() => {
+        console.log('runs')
         const unlocks = window.localStorage.getItem("unlockedPosts");
         if (unlocks) {
             const parsedUnlocks: string[] = JSON.parse(unlocks);
             dispatch(hydrateUnlocks(parsedUnlocks));
         }
-    }, [dispatch]);
+        const savedKey = getKeyFromStorage();
+        if (savedKey) {
+            dispatch(setKey(savedKey));
+            setShowBlock(false);
+        }
+        if (nostrAvailable) {
+            setShowBlock(false);
+        }
+    }, [dispatch, nostrAvailable]);
     return (
         <div
             className={
@@ -43,8 +54,10 @@ function Root() {
                             <a href="https://getalby.com">getalby.com</a>
                         </p>
                         <Button
-                            text="Open Anyways!"
+                            text="Use with random key instead"
                             onClick={() => {
+                                const sk = generatePrivateKey();
+                                dispatch(setKey(sk));
                                 setShowBlock(false);
                             }}
                         />

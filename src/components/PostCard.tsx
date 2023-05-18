@@ -4,7 +4,7 @@ import { SerializableZapGateEvent } from "../routes/ZapGateEvent";
 import { nip19 } from "nostr-tools";
 import Button from "./Button";
 import SecondaryButton from "./SecondaryButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUnlock } from "../state/nostrSlice";
 import {
@@ -14,6 +14,8 @@ import {
 } from "../utils/nostr";
 import InvoiceModal from "./InvoiceModal";
 import { FaLock, FaShare, FaUnlock } from "react-icons/fa";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { setIntervalImmediately } from "../utils/general";
 
 type PostCardProps = {
     event: SerializableZapGateEvent;
@@ -25,18 +27,9 @@ function PostCard({ event }: PostCardProps) {
         url: `https://zapgate.link/post/${nip19.neventEncode({id: event.id, relays: event.relays})}`
       };
     const isUnlocked = useUnlocked(event.id);
+    const savedKey = useAppSelector(state => state.nostr.key);
     const [isOpen, setIsOpen] = useState(false);
     const [showNotice, setShowNotice] = useState(false);
-    useEffect(() => {
-        async function unlock() {
-            const signedEvent = await createNip98GetEvent(event.url);
-            const image = await nip98GetImage(event.url, signedEvent);
-            setImage(image);
-        }
-        if (isUnlocked) {
-            unlock();
-        }
-    }, [isUnlocked, event]);
     const [image, setImage] = useState("");
     const [invoice, setInvoice] = useState("");
     const dispatch = useDispatch();
@@ -93,12 +86,13 @@ function PostCard({ event }: PostCardProps) {
                                 Number(event.amount),
                                 event.eventData.pubkey,
                                 event.id,
-                                event.relays
+                                event.relays,
+                                savedKey
                             );
                             const signedEvent = await createNip98GetEvent(
-                                event.url
+                                event.url, savedKey
                             );
-                            const interval = window.setInterval(async () => {
+                            const interval = setIntervalImmediately(async () => {
                                 try {
                                     const image = await nip98GetImage(
                                         event.url,
@@ -123,7 +117,8 @@ function PostCard({ event }: PostCardProps) {
                         text="Restore"
                         onClick={async () => {
                             const signedEvent = await createNip98GetEvent(
-                                event.url
+                                event.url,
+                                savedKey
                             );
                             try {
                                 const image = await nip98GetImage(
