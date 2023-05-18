@@ -15,6 +15,7 @@ import {
 import InvoiceModal from "./InvoiceModal";
 import { FaLock, FaShare, FaUnlock } from "react-icons/fa";
 import { useAppSelector } from "../hooks/useAppSelector";
+import { setIntervalImmediately } from "../utils/general";
 
 type PostCardProps = {
     event: SerializableZapGateEvent;
@@ -91,7 +92,7 @@ function PostCard({ event }: PostCardProps) {
                             const signedEvent = await createNip98GetEvent(
                                 event.url, savedKey
                             );
-                            const interval = window.setInterval(async () => {
+                            const interval = setIntervalImmediately(async () => {
                                 try {
                                     const image = await nip98GetImage(
                                         event.url,
@@ -116,7 +117,8 @@ function PostCard({ event }: PostCardProps) {
                         text="Restore"
                         onClick={async () => {
                             const signedEvent = await createNip98GetEvent(
-                                event.url
+                                event.url,
+                                savedKey
                             );
                             try {
                                 const image = await nip98GetImage(

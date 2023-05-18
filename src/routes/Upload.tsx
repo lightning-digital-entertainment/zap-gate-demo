@@ -5,6 +5,7 @@ import { getEventHash, getPublicKey, nip19, signEvent } from "nostr-tools";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAppSelector } from "../hooks/useAppSelector";
+import { FaUpload } from "react-icons/fa";
 
 function Upload() {
     const navigate = useNavigate();
@@ -81,8 +82,8 @@ function Upload() {
                 onSubmit={submitHandler}
             >
                 <div className="flex my-2 flex-col">
-                    <label>Image</label>
-                    <input type="file" id="asset" name="asset" ref={fileRef} />
+                    <label htmlFor='asset' className="flex flex-row py-1 px-2 bg-current-500 items-center justify-center rounded text-zinc-900"><FaUpload/><p className="ml-2">Select Image</p></label>
+                    <input type="file" id="asset" name="asset" ref={fileRef} className="hidden"/>
                 </div>
                 <div className="flex my-2 flex-col">
                     <label>Price in SATS</label>
@@ -91,6 +92,7 @@ function Upload() {
                         id="price"
                         name="price"
                         ref={amountRef}
+                        className="bg-zinc-800 text-white rounded"
                     />
                 </div>
                 <div className="flex my-2 flex-col mb-4">
@@ -100,6 +102,7 @@ function Upload() {
                         id="zapTarget"
                         name="zapTarget"
                         ref={zapRef}
+                        className="bg-zinc-800 text-white rounded"
                     />
                 </div>
                 <div className="flex my-2 flex-col mb-4">
@@ -109,6 +112,7 @@ function Upload() {
                         id="description"
                         name="description"
                         ref={descriptionRef}
+                        className="bg-zinc-800 text-white rounded"
                     />
                 </div>
                 <Button text="Submit" />

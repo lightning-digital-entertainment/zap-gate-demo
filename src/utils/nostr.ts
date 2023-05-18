@@ -2,7 +2,6 @@ import {
     getEventHash,
     getPublicKey,
     nip19,
-    relayInit,
     signEvent,
 } from "nostr-tools";
 
@@ -19,27 +18,12 @@ declare global {
     }
 }
 
+const relays = ["wss://nostr1.current.fyi", "wss://wc1.current.ninja"];
+
 type Nostr = {
     getPublicKey(): Promise<string>;
     signEvent(event: EventTemplate): Promise<Event>;
 };
-
-const relayUrl = "wss://nos.lol";
-
-const relay = relayInit(relayUrl);
-
-export async function getMetadata() {
-    if (relay.status !== 1) {
-        await relay.connect();
-    }
-    const data = await relay.get({
-        authors: [
-            "ddf03aca85ade039e6742d5bef3df352df199d0d31e22b9858e7eda85cb3bbbe",
-        ],
-        kinds: [0],
-    });
-    return data;
-}
 
 export async function getZapInvoice(
     lud16: string,
@@ -82,35 +66,21 @@ export async function getEventById(eventId: string | undefined) {
     if (type !== "nevent" && type !== "note") {
         throw new Error("Invalid event");
     }
-    if (relay.status !== 1) {
-        await relay.connect();
-    }
     if (type === "nevent") {
+        console.log(data.relays);
         if (!data.relays) {
-            // use recommended relays
+            const res = await pool.get(relays, { ids: [data.id] });
+            return res;
         } else {
             const res = await pool.get(data.relays, { ids: [data.id] });
             return res;
         }
     }
     if (type === "note") {
-        const res = await relay.get({ ids: [data] });
+        const res = await pool.get(relays, { ids: [data] });
         return res;
     }
 }
-
-export const metadata = {
-    id: "6b41daa041c0435bc78b3b16f9b1ebfb08e6798e82c1f2aaa5eb094323992d80",
-    pubkey: "ddf03aca85ade039e6742d5bef3df352df199d0d31e22b9858e7eda85cb3bbbe",
-    created_at: 1681193351,
-    kind: 0,
-    tags: [],
-    content:
-        '{"name":"egge","nip05":"egge@getcurrent.io","about":"Building current; a nostr + bitcoin client! https://app.getcurrent.io 💜⚡️🧡 | pro zapper!!","picture":"https://i.current.fyi/ddf03aca85ade039/profile/avatar_46978.png","lud16":"egge@getcurrent.io"}',
-    sig: "95abf09e94f92a597d324fdb14e08df3ec092ce2f16cb64d516429a72c9c691058dfe5c99d5a85f405ca7655e81ce70cbd5b716198dbf8c7d901ebba123ffdde",
-};
-
-// async function getZapInvoice() {}
 
 export async function buildZapEvent(
     amount: number,
