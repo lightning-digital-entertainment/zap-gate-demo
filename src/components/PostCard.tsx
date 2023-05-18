@@ -4,7 +4,7 @@ import { SerializableZapGateEvent } from "../routes/ZapGateEvent";
 import { nip19 } from "nostr-tools";
 import Button from "./Button";
 import SecondaryButton from "./SecondaryButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUnlock } from "../state/nostrSlice";
 import {
