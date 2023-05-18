@@ -5,11 +5,14 @@ import Button from "../components/Button";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { hydrateUnlocks } from "../state/nostrSlice";
+import WarningBanner from "../components/WarningBanner";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 function Root() {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const nostrAvailable = useNip07();
+    const bannerDismissed = useAppSelector(state => state.utility.bannerDismissed)
     const [showBlock, setShowBlock] = useState(!nostrAvailable);
     useEffect(() => {
         const unlocks = window.localStorage.getItem("unlockedPosts");
@@ -48,6 +51,9 @@ function Root() {
                     </div>
                 </div>
             ) : undefined}
+            {!bannerDismissed ? <div className="absolute justify-center flex w-full bottom-0">
+                <WarningBanner />
+            </div> : undefined}
         </div>
     );
 }
