@@ -1,4 +1,10 @@
-import { nip19, relayInit } from "nostr-tools";
+import {
+    getEventHash,
+    getPublicKey,
+    nip19,
+    relayInit,
+    signEvent,
+} from "nostr-tools";
 
 import { EventTemplate, Event } from "nostr-tools";
 import { pool } from "../main";
@@ -40,10 +46,17 @@ export async function getZapInvoice(
     amount: number,
     targetPubkey: string,
     targetEventId: string,
-    relays: string[]
+    relays: string[],
+    sk: string | undefined
 ) {
     const [username, domain] = lud16.split("@");
-    const zapRequest = await buildZapEvent(amount, targetPubkey, targetEventId, relays);
+    const zapRequest = await buildZapEvent(
+        amount,
+        targetPubkey,
+        targetEventId,
+        relays,
+        sk
+    );
     const initRes = await fetch(
         `https://${domain}/.well-known/lnurlp/${username}`
     );
@@ -86,10 +99,6 @@ export async function getEventById(eventId: string | undefined) {
     }
 }
 
-export async function getPublicKey() {
-    return await window.nostr.getPublicKey();
-}
-
 export const metadata = {
     id: "6b41daa041c0435bc78b3b16f9b1ebfb08e6798e82c1f2aaa5eb094323992d80",
     pubkey: "ddf03aca85ade039e6742d5bef3df352df199d0d31e22b9858e7eda85cb3bbbe",
@@ -107,57 +116,123 @@ export async function buildZapEvent(
     amount: number,
     targetPubkey: string,
     targetEventId: string,
-    relays: string[]
+    relays: string[],
+    sk: string | undefined
 ) {
-    const event = {
-        kind: 9734,
-        content: "ZapGate Demo",
-        tags: [
-            ["relays", ...relays],
-            ["amount", String(amount * 1000)],
-            ["p", targetPubkey],
-            ["e", targetEventId],
-        ],
-        created_at: Math.floor(Date.now() / 1000),
-    };
-    const signedEvent = await window.nostr.signEvent(event);
-    return encodeURI(JSON.stringify(signedEvent));
+    if (sk) {
+        const pk = getPublicKey(sk);
+        const event = {
+            kind: 9734,
+            content: "ZapGate Demo",
+            pubkey: pk,
+            tags: [
+                ["relays", ...relays],
+                ["amount", String(amount * 1000)],
+                ["p", targetPubkey],
+                ["e", targetEventId],
+            ],
+            created_at: Math.floor(Date.now() / 1000),
+            id: "",
+            sig: "",
+        };
+        event.id = getEventHash(event);
+        event.sig = signEvent(event, sk);
+        return encodeURI(JSON.stringify(event));
+    } else {
+        const event = {
+            kind: 9734,
+            content: "ZapGate Demo",
+            tags: [
+                ["relays", ...relays],
+                ["amount", String(amount * 1000)],
+                ["p", targetPubkey],
+                ["e", targetEventId],
+            ],
+            created_at: Math.floor(Date.now() / 1000),
+        };
+        const signedEvent = await window.nostr.signEvent(event);
+        return encodeURI(JSON.stringify(signedEvent));
+    }
 }
 
-export async function createNip98GetEvent(url: string) {
-    if (!window.nostr) {
-        throw new Error("No nip07 provider found...");
+export async function createNip98GetEvent(url: string, sk?: string) {
+    if (!window.nostr && !sk) {
+        throw new Error("No nip07 provider or key found...");
     }
-    const event = {
-        content: "",
-        kind: 27235,
-        created_at: Math.floor(Date.now() / 1000),
-        tags: [
-            ["u", url],
-            ["method", "GET"],
-        ],
-    };
-    const signedEvent = await window.nostr.signEvent(event);
-    const encodedEvent = window.btoa(JSON.stringify(signedEvent));
-    return encodedEvent;
+    if (sk) {
+        const pk = getPublicKey(sk);
+        const event = {
+            content: "",
+            kind: 27235,
+            pubkey: pk,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+                ["u", url],
+                ["method", "GET"],
+            ],
+            id: "",
+            sig: "",
+        };
+        event.id = getEventHash(event);
+        event.sig = signEvent(event, sk);
+        const encodedEvent = window.btoa(JSON.stringify(event));
+        return encodedEvent;
+    } else {
+        const event = {
+            content: "",
+            kind: 27235,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+                ["u", url],
+                ["method", "GET"],
+            ],
+        };
+        const signedEvent = await window.nostr.signEvent(event);
+        const encodedEvent = window.btoa(JSON.stringify(signedEvent));
+        return encodedEvent;
+    }
 }
 
-export async function createNip98Header(url: string, method: "GET" | "POST") {
-    if (!window.nostr) {
-        throw new Error("No nip07 provider found...");
+export async function createNip98Header(
+    url: string,
+    method: "GET" | "POST",
+    sk?: string
+) {
+    if (!window.nostr && !sk) {
+        throw new Error("No nip07 provider or saved key found...");
     }
-    const event = {
-        content: "",
-        kind: 27235,
-        created_at: Math.floor(Date.now() / 1000),
-        tags: [
-            ["u", url],
-            ["method", method],
-        ],
-    };
-    const signedEvent = await window.nostr.signEvent(event);
-    const encodedEvent = window.btoa(JSON.stringify(signedEvent));
-    return `Nostr ${encodedEvent}`;
+    if (sk) {
+        const pk = getPublicKey(sk);
+        const event = {
+            content: "",
+            kind: 27235,
+            pubkey: pk,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+                ["u", url],
+                ["method", method],
+            ],
+            id: "",
+            sig: "",
+        };
+        event.id = getEventHash(event);
+        event.sig = signEvent(event, sk);
+        const encodedEvent = window.btoa(JSON.stringify(event));
+        return `Nostr ${encodedEvent}`;
+    } else {
+        const event = {
+            content: "",
+            kind: 27235,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+                ["u", url],
+                ["method", method],
+            ],
+        };
+        const signedEvent = await window.nostr.signEvent(event);
+        const encodedEvent = window.btoa(JSON.stringify(signedEvent));
+        return `Nostr ${encodedEvent}`;
+    }
 }
 
 export async function nip98GetImage(url: string, base64event: string) {
@@ -167,8 +242,8 @@ export async function nip98GetImage(url: string, base64event: string) {
         },
     });
     if (req.status !== 200) {
-        const error: ResponseError = new Error()
-        error.message = `Client error: ${req.status}`
+        const error: ResponseError = new Error();
+        error.message = `Client error: ${req.status}`;
         error.status = req.status;
         throw error;
     }

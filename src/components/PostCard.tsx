@@ -14,6 +14,7 @@ import {
 } from "../utils/nostr";
 import InvoiceModal from "./InvoiceModal";
 import { FaLock, FaShare, FaUnlock } from "react-icons/fa";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 type PostCardProps = {
     event: SerializableZapGateEvent;
@@ -25,18 +26,9 @@ function PostCard({ event }: PostCardProps) {
         url: `https://zapgate.link/post/${nip19.neventEncode({id: event.id, relays: event.relays})}`
       };
     const isUnlocked = useUnlocked(event.id);
+    const savedKey = useAppSelector(state => state.nostr.key);
     const [isOpen, setIsOpen] = useState(false);
     const [showNotice, setShowNotice] = useState(false);
-    useEffect(() => {
-        async function unlock() {
-            const signedEvent = await createNip98GetEvent(event.url);
-            const image = await nip98GetImage(event.url, signedEvent);
-            setImage(image);
-        }
-        if (isUnlocked) {
-            unlock();
-        }
-    }, [isUnlocked, event]);
     const [image, setImage] = useState("");
     const [invoice, setInvoice] = useState("");
     const dispatch = useDispatch();
@@ -93,10 +85,11 @@ function PostCard({ event }: PostCardProps) {
                                 Number(event.amount),
                                 event.eventData.pubkey,
                                 event.id,
-                                event.relays
+                                event.relays,
+                                savedKey
                             );
                             const signedEvent = await createNip98GetEvent(
-                                event.url
+                                event.url, savedKey
                             );
                             const interval = window.setInterval(async () => {
                                 try {

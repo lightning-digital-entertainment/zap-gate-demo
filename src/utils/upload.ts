@@ -7,7 +7,8 @@ export async function uploadZapGateFile(
     amount: string,
     dest: string,
     file: Blob,
-    content: string | undefined
+    content?: string,
+    sk?: string
 ): Promise<Event> {
     const event = {
         kind: 121121,
@@ -25,7 +26,8 @@ export async function uploadZapGateFile(
     formData.set("event", window.btoa(JSON.stringify(event)));
     const authHeader = await createNip98Header(
         "https://zgate.current.ninja/uploadzapcontent",
-        "POST"
+        "POST",
+        sk
     );
     const res = await fetch(`https://zgate.current.ninja/uploadzapcontent`, {
         method: "POST",

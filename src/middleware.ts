@@ -1,11 +1,11 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit";
-import { addUnlock } from "./state/nostrSlice";
+import { addUnlock, setKey } from "./state/nostrSlice";
 
 const listenerMiddleware = createListenerMiddleware()
 
 listenerMiddleware.startListening({
   actionCreator: addUnlock,
-  effect: async (action) => {
+  effect: (action) => {
     const storedUnlocks = window.localStorage.getItem('unlockedPosts');
     if (storedUnlocks) {
       const parsedUnlocks: string[] = JSON.parse(storedUnlocks);
@@ -16,6 +16,13 @@ listenerMiddleware.startListening({
       const newUnlocks = JSON.stringify([action.payload]);
       window.localStorage.setItem('unlockedPosts', newUnlocks);
     }
+  }
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setKey,
+  effect: (action) => {
+    window.localStorage.setItem('key', action.payload)
   }
 })
 

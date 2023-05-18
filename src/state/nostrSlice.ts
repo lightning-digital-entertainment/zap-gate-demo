@@ -5,12 +5,14 @@ export interface NostrState {
     unlocked: string[];
     zgEvents: SerializableZapGateEvent[];
     zgEventIds: string[];
+    key: string | undefined;
 }
 
 const initialState: NostrState = {
     unlocked: [],
     zgEvents: [],
     zgEventIds: [],
+    key: undefined,
 };
 
 export const nostrSlice = createSlice({
@@ -29,10 +31,13 @@ export const nostrSlice = createSlice({
             }
             state.zgEvents = [...state.zgEvents, action.payload];
             state.zgEventIds = [...state.zgEventIds, action.payload.id];
+        },
+        setKey: (state, action: PayloadAction<string>) => {
+            state.key = action.payload;
         }
     },
 });
 
-export const { addUnlock, addEvent, hydrateUnlocks } = nostrSlice.actions;
+export const { addUnlock, addEvent, hydrateUnlocks, setKey } = nostrSlice.actions;
 
 export default nostrSlice.reducer;
