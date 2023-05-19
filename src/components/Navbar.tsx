@@ -13,7 +13,7 @@ function Navbar() {
             </Link>
             <div className="flex flex-row items-center">
                 <a
-                    href="https://github.com/Egge7/nips/blob/zapGates/XX.md"
+                    href="https://github.com/Egge7/nips/blob/zapGates/60.md"
                     className="mr-4 text-xl text-white"
                 >
                     <FaGithub/>
